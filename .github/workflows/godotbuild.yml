@@ -37,7 +37,7 @@ jobs:
     - name: Export project
       run: |
         mkdir build
-        v4.2.1-stable/Godot_v4.2.1-stable_mono_linux_x86_64/Godot_v4.2.1-stable_mono_linux.x86_64 --headless --export-release "windows" "build/project.exe"
+        v4.2.1-stable/Godot_v4.2.1-stable_mono_linux_x86_64/Godot_v4.2.1-stable_mono_linux.x86_64 --headless --export-release "windows" "./project.exe"
         tree
     - name: Refactor
       run: |
@@ -47,7 +47,7 @@ jobs:
     
     - name: Place to zip
       run: |
-          sudo zip -r Jump-Fight.zip ./build/*
+          sudo zip -r Jump-Fight.zip ./project.exe
           tree
           
     - name: Generate Git Tag
@@ -64,25 +64,6 @@ jobs:
       uses: softprops/action-gh-release@v1
       with:
           files: ./Jump-Fight.zip
-          tag_name: v2.0.0
+          tag_name: v1.0
 
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3
-
-    - name: Login to Docker Hub
-      uses: docker/login-action@v3.1.0
-      with:
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
-
-    - name: Build Docker image
-      run: |
-        cd ../Jump-Fight
-        tree
-        docker buildx build --platform linux/amd64 --output=type=docker -t sskibaa/jump-fight:latest . 
-        docker image ls -a
-        
-    - name: Push Docker image
-      run: |
-        docker push sskibaa/jump-fight:latest 
         
